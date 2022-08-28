@@ -1,0 +1,2 @@
+﻿
+scaffold-DbContext "Data Source = .; Initial Catalog = HomeWork; Trusted_Connection = True; Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir "Models/Data/Entity" -ContextDir "Models/Data" -Context "HomeWorkDbContext" -t dbo.tblItem, dbo.tblPartner, dbo.tblPartnerType, dbo.tblPurchase, dbo.tblPurchaseDetails, dbo.tblSales, dbo.tblSalesDetails -f
