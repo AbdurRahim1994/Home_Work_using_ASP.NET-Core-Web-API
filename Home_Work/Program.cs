@@ -1,4 +1,5 @@
 using Home_Work;
+using Home_Work.Helper;
 using Home_Work.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -18,12 +19,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<HomeWorkDbContext>(option => option.UseSqlServer(ConnectionString)); // Dependency Container, swagger setting, DB Connection
+builder.Services.AddDbContext<HomeWorkDbContext>(option => option.UseSqlServer(ConnectionString)); //swagger setting, DB Connection
 builder.Services.AddSwaggerGen(a =>
 {
     a.SwaggerDoc("v1", new OpenApiInfo() { Title = "Home Work", Version = "v1" });
 });
 DependencyContainer.RegisterServices(builder.Services);
+Connection.Home_Work = ConnectionString;
 
 var app = builder.Build();
 

@@ -21,5 +21,19 @@ namespace Home_Work.Controllers
             var dt = await _itemService.CreateItem(obj);
             return Ok(dt);
         }
+        [HttpPost]
+        [Route("CreateItemWithSQLJSON")]
+        public async Task<IActionResult> CreateItemWithSQLJSON(List<ItemDTOWithSQLJSON> obj)
+        {
+            var dt = await _itemService.CreateItemWithSQLJSON(obj);
+            return Ok(dt);
+        }
+        [HttpPost]
+        [Route("EditItem")]
+        public async Task<IActionResult> EditItem(ItemDTO item)
+        {
+            var dt = await _itemService.EditItem(item);
+            return Ok(dt);
+        }
     }
 }

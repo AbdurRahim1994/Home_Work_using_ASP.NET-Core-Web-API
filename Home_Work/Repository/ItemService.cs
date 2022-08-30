@@ -3,6 +3,9 @@ using Home_Work.Helper;
 using Home_Work.IRepository.Item;
 using Home_Work.Models.Data;
 using Home_Work.Models.Data.Entity;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using System.Text.Json;
 
 namespace Home_Work.Repository
 {
@@ -62,6 +65,66 @@ namespace Home_Work.Repository
             {
 
                 throw ex;
+            }
+        }
+        public async Task<MessageHelper> CreateItemWithSQLJSON(List<ItemDTOWithSQLJSON> obj)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                using(SqlConnection con=new SqlConnection(Connection.Home_Work))
+                {
+                    string json=JsonSerializer.Serialize(obj);
+                    string sql = "dbo.sprItem";
+                    using(SqlCommand cmd=new SqlCommand(sql, con))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@jsonString", json);
+
+                        con.Open();
+                        using(SqlDataAdapter adapter =new SqlDataAdapter(cmd))
+                        {
+                            adapter.Fill(dt);
+                        }
+                        con.Close();
+                    }
+                    msg.Message = Convert.ToString(dt.Rows[0]["strMessage"]);
+                    msg.StatusCode = Convert.ToUInt32(dt.Rows[0]["StatusCode"]);
+                    return msg;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<MessageHelper> EditItem(ItemDTO item)
+        {
+            try
+            {
+                TblItem? data=_context.TblItems.Where(x=>x.IntItemId==item.IntItemId).FirstOrDefault();
+                if (data != null)
+                {
+                    data.StrItemName = item.StrItemName;
+                    data.NumStockQuantity = item.NumStockQuantity;
+                    data.IsActive = item.IsActive;
+
+                    _context.TblItems.Update(data);
+                    await _context.SaveChangesAsync();
+                    msg.Message = "Edited Successfully";
+                }
+                else
+                {
+                    msg.Message = "Data not found";
+                }
+                return msg;
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
