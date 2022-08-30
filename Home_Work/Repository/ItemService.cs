@@ -28,7 +28,7 @@ namespace Home_Work.Repository
                 if (isExist.Count() > 0)
                 {
                     //throw new Exception($"{String.Join(", ", isExist)} - Already Exists");
-                    msg.Message = $"{String.Join(", ", isExist)} - Already Exists";
+                    msg.Message = $"Item Name : {String.Join(", ", isExist)} - Already Exists";
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace Home_Work.Repository
                         }
                         else
                         {
-                            msg.Message = $"{String.Join(", ", Exist)} - Already Exists";
+                            msg.Message = $"Item Name : {String.Join(", ", Exist)} - Already Exists";
                         }
                     }
                     await _context.TblItems.AddRangeAsync(createItem);
