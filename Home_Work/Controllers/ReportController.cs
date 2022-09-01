@@ -1,7 +1,9 @@
-﻿using Home_Work.Models.Data;
+﻿using Home_Work.DTO.Report;
+using Home_Work.Models.Data;
 using Home_Work.Repository.Report;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace Home_Work.Controllers
@@ -18,10 +20,25 @@ namespace Home_Work.Controllers
         }
         [HttpGet]
         [Route("GetAllItem")]
-        public async Task<IActionResult> GetAllItem(bool isActive)
+        public async Task<IActionResult> GetAllItem(bool isActive, bool isDownload)
         {
-            var dt = await report.GetItemList(isActive);
-            return await DownloadExcel.GetItemList(dt);
+            var data = await (from i in _context.TblItems
+                              where i.IsActive == true
+                              select new GetItemListDTO
+                              {
+                                  IntItemId = i.IntItemId,
+                                  StrItemName = i.StrItemName,
+                                  NumStockQuantity = i.NumStockQuantity,
+                                  IsActive = i.IsActive
+                              }).ToListAsync();
+            if (isDownload == true)
+            {
+                return await DownloadExcel.GetItemList(data);
+            }
+            else
+            {
+                return Ok(data);
+            }           
         }
         
     }

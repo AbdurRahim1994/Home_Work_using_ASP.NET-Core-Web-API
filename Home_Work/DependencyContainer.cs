@@ -13,7 +13,6 @@ namespace Home_Work
         {
             services.AddTransient<IItemService, ItemService>();
             services.AddTransient<IPurchaseService, PurchaseService>();
-            services.AddTransient<IReportService, ReportService>();
         }
     }
 }
