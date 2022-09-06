@@ -8,6 +8,6 @@ namespace Home_Work.Models.Data.Entity
         public long IntSalesId { get; set; }
         public long IntCustomerId { get; set; }
         public DateTime DteSalesDate { get; set; }
-        public string? IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

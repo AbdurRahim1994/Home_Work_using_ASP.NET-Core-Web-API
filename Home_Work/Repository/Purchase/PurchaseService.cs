@@ -41,10 +41,10 @@ namespace Home_Work.Repository.Purchase
                     det.Add(details);
 
                     var stock = _context.TblItems.Where(x => x.IntItemId == item.IntItemId && x.IsActive == true).Select(x => x.NumStockQuantity).FirstOrDefault();
-                    stock = stock - item.NumQuantity;
+                    stock = stock + item.NumQuantity;
                     
                     TblItem? itm =_context.TblItems.Where(x=>x.IsActive==true && x.IntItemId==item.IntItemId).FirstOrDefault();
-                    itm.NumStockQuantity = itm.NumStockQuantity - stock;
+                    itm.NumStockQuantity = stock;
                     
                     _context.TblItems.Update(itm);
                     await _context.SaveChangesAsync();

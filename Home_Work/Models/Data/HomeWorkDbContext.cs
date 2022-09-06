@@ -141,10 +141,7 @@ namespace Home_Work.Models.Data
 
                 entity.Property(e => e.IntCustomerId).HasColumnName("intCustomerId");
 
-                entity.Property(e => e.IsActive)
-                    .HasMaxLength(10)
-                    .HasColumnName("isActive")
-                    .IsFixedLength();
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
             });
 
             modelBuilder.Entity<TblSalesDetail>(entity =>
