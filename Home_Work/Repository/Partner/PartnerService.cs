@@ -19,7 +19,7 @@ namespace Home_Work.Repository.Partner
         {
             try
             {
-                var isExist = _context.TblPartnerTypes.Where(x => x.StrPartnerTypeName == obj.StrPartnerTypeName && x.IsActive == true).FirstOrDefault();
+                var isExist = _context.TblPartnerTypes.Where(x => x.StrPartnerTypeName.ToLower() == obj.StrPartnerTypeName.ToLower() && x.IsActive == true).FirstOrDefault();
                 if(isExist != null)
                 {
                     throw new Exception($"Partner Type {isExist.StrPartnerTypeName} Already Exists ");
