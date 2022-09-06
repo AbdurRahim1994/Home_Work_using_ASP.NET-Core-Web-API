@@ -3,6 +3,7 @@ using Home_Work.Helper;
 using Home_Work.IRepository.Purchase;
 using Home_Work.Models.Data;
 using Home_Work.Models.Data.Entity;
+using System.Transactions;
 
 namespace Home_Work.Repository.Purchase
 {
@@ -16,6 +17,7 @@ namespace Home_Work.Repository.Purchase
         }
         public async Task<MessageHelper> CreatePurchase(PurchaseDTO obj)
         {
+            var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 TblPurchase pur = new TblPurchase
@@ -51,13 +53,15 @@ namespace Home_Work.Repository.Purchase
                 }
                 await _context.TblPurchaseDetails.AddRangeAsync(det);
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
                 msg.Message = "Created Successfully";
                 return msg;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                await transaction.RollbackAsync();
+                throw ex;
             }
         }
         public async Task<MessageHelper> MultiplePurchaseCreate(List<PurchaseDTO> obj)
