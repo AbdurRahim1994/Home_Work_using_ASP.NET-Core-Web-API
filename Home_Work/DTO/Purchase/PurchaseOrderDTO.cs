@@ -20,4 +20,12 @@
         public decimal NumUnitPrice { get; set; }
         public bool IsActive { get; set; }
     }
+    public class ItemWiseDailyPurchaseReportDTO
+    {
+        public long ItemId { get; set; }
+        public string ItemName { get; set; }
+        public DateTime PurchaseDate { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal Quantity { get; set; }
+    }
 }

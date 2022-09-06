@@ -43,7 +43,7 @@ namespace Home_Work.Repository.Sales
                     var stock = _context.TblItems.Where(x => x.IntItemId == item.IntItemId && x.IsActive == true).Select(x => x.NumStockQuantity).FirstOrDefault();
                     if (stock < item.NumQuantity)
                     {
-                        throw new Exception("Insufficient Stock");
+                        throw new Exception($"Insufficient Stock of {item.IntItemId}");
                     }
                     else
                     {

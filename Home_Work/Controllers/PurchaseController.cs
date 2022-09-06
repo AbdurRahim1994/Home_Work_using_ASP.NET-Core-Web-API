@@ -28,5 +28,11 @@ namespace Home_Work.Controllers
             var dt = await _purchaseService.MultiplePurchaseCreate(obj);
             return Ok(dt);
         }
+        [HttpGet]
+        [Route("ItemWiseDailyPurchaseReport")]
+        public async Task<IActionResult> ItemWiseDailyPurchaseReport(long itemId, DateTime purchaseDate)
+        {
+            return Ok(await _purchaseService.ItemWiseDailyPurchaseReport(itemId, purchaseDate));
+        }
     }
 }

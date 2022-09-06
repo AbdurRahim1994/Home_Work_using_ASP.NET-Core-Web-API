@@ -3,6 +3,7 @@ using Home_Work.Helper;
 using Home_Work.IRepository.Purchase;
 using Home_Work.Models.Data;
 using Home_Work.Models.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Transactions;
 
 namespace Home_Work.Repository.Purchase
@@ -64,6 +65,7 @@ namespace Home_Work.Repository.Purchase
                 throw ex;
             }
         }
+
         public async Task<MessageHelper> MultiplePurchaseCreate(List<PurchaseDTO> obj)
         {
             try
@@ -92,11 +94,11 @@ namespace Home_Work.Repository.Purchase
                         };
                         detail.Add(det);
 
-                        var stock = _context.TblItems.Where(x => x.IsActive == true && x.IntItemId == data.IntItemId).Select(x => x.NumStockQuantity).FirstOrDefault();
-                        stock = stock - data.NumQuantity;
+                        //var stock = _context.TblItems.Where(x => x.IsActive == true && x.IntItemId == data.IntItemId).Select(x => x.NumStockQuantity).FirstOrDefault();
+                        //stock = stock - data.NumQuantity;
                         
                         TblItem? itm = _context.TblItems.Where(x => x.IsActive == true && x.IntItemId == data.IntItemId).FirstOrDefault();
-                        itm.NumStockQuantity = stock;
+                        itm.NumStockQuantity = itm.NumStockQuantity + data.NumQuantity;
                         _context.TblItems.Update(itm);
                         await _context.SaveChangesAsync();
                     }
@@ -110,6 +112,40 @@ namespace Home_Work.Repository.Purchase
             {
 
                 throw ex;
+            }
+        }
+        public async Task<ItemWiseDailyPurchaseReportDTO> ItemWiseDailyPurchaseReport(long itemId, DateTime purchaseDate)
+        {
+            try
+            {
+                var data = await (from itm in _context.TblItems
+                                  join pur in _context.TblPurchaseDetails on itm.IntItemId equals pur.IntItemId
+                                  join purd in _context.TblPurchases on pur.IntPurchaseId equals purd.IntPurchaseId
+                                  where itm.IsActive == true
+                                  && pur.IsActive == true
+                                  && purd.DtePurchaseDate.Date == purchaseDate.Date
+                                  select new
+                                  {
+                                      itm.IntItemId,
+                                      itm.StrItemName,
+                                      purd.DtePurchaseDate,
+                                      pur.NumQuantity
+                                  }).GroupBy(x => new
+                                  {
+                                      x.IntItemId,
+                                      x.StrItemName
+                                  }).Select(a => new ItemWiseDailyPurchaseReportDTO
+                                  {
+                                      ItemId = a.Key.IntItemId,
+                                      ItemName = a.Key.StrItemName,
+                                      Quantity = a.Sum(x => x.NumQuantity)
+                                  }).FirstOrDefaultAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
             }
         }
     }
