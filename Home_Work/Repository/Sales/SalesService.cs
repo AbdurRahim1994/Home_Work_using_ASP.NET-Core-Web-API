@@ -17,6 +17,7 @@ namespace Home_Work.Repository.Sales
 
         public async Task<MessageHelper> CreateSales(SalesDTO obj)
         {
+            var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 TblSale sales = new TblSale();
@@ -56,12 +57,13 @@ namespace Home_Work.Repository.Sales
                 }
                 await _context.TblSalesDetails.AddRangeAsync(detail);
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
                 msg.Message = "Created Successfully";
                 return msg;
             }
             catch (Exception ex)
             {
-
+                await transaction.RollbackAsync();
                 throw new Exception(ex.Message);
             }
         }
