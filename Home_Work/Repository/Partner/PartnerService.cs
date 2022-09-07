@@ -44,5 +44,41 @@ namespace Home_Work.Repository.Partner
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<MessageHelper> CreatePartner(List<PartnerDTO> obj)
+        {
+            try
+            {
+                var isExist = _context.TblPartners.Where(x => x.IsActive == true && obj.Select(x => x.StrPartnerName.ToLower()).ToList().Contains(x.StrPartnerName.ToLower())).Select(a=>a.StrPartnerName.ToLower()).ToList();
+                if (isExist.Count > 0)
+                {
+                    throw new Exception($"Partner Name: {string.Join(", ", isExist)} Already Exists");
+                }
+                else
+                {
+                    List<TblPartner> part = new List<TblPartner>();
+                    foreach (var item in obj)
+                    {
+                        TblPartner partner = new TblPartner();
+                        partner.StrPartnerName = item.StrPartnerName;
+                        partner.IntPartnerTypeId = item.IntPartnerTypeId;
+                        partner.IsActive = true;
+
+                        part.Add(partner);
+                    }
+                    await _context.TblPartners.AddRangeAsync(part);
+                    await _context.SaveChangesAsync();
+
+                    msg.Message = "Created Successfully";
+                }
+                return msg;
+                
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

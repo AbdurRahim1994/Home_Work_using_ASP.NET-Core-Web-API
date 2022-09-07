@@ -6,5 +6,6 @@ namespace Home_Work.IRepository.Partner
     public interface IPartnerService
     {
         public Task<MessageHelper> CreatePartnerType(PartnerTypeDTO obj);
+        public Task<MessageHelper> CreatePartner(List<PartnerDTO> obj);
     }
 }
