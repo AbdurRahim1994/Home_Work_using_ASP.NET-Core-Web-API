@@ -4,6 +4,7 @@ using Home_Work.IRepository.Purchase;
 using Home_Work.Models.Data;
 using Home_Work.Models.Data.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Transactions;
 
 namespace Home_Work.Repository.Purchase
@@ -114,32 +115,37 @@ namespace Home_Work.Repository.Purchase
                 throw ex;
             }
         }
-        public async Task<ItemWiseDailyPurchaseReportDTO> ItemWiseDailyPurchaseReport(long itemId, DateTime purchaseDate)
+        public async Task<List<ItemWiseDailyPurchaseReportDTO>> ItemWiseDailyPurchaseReport(DateTime purchaseDate)
         {
             try
             {
-                var data = await (from itm in _context.TblItems
+                var data =await (from itm in _context.TblItems
                                   join pur in _context.TblPurchaseDetails on itm.IntItemId equals pur.IntItemId
                                   join purd in _context.TblPurchases on pur.IntPurchaseId equals purd.IntPurchaseId
                                   where itm.IsActive == true
                                   && pur.IsActive == true
-                                  && purd.DtePurchaseDate.Date == purchaseDate.Date
+                                  && purd.DtePurchaseDate.Value.Date == purchaseDate.Date
                                   select new
                                   {
                                       itm.IntItemId,
                                       itm.StrItemName,
-                                      purd.DtePurchaseDate,
-                                      pur.NumQuantity
+                                      pur.NumQuantity,
+                                      purchaseDate = purd.DtePurchaseDate.Value.Date,
+                                      pur.NumUnitPrice
                                   }).GroupBy(x => new
                                   {
                                       x.IntItemId,
-                                      x.StrItemName
+                                      x.StrItemName,
+                                      x.purchaseDate,
+                                      x.NumUnitPrice
                                   }).Select(a => new ItemWiseDailyPurchaseReportDTO
                                   {
                                       ItemId = a.Key.IntItemId,
                                       ItemName = a.Key.StrItemName,
-                                      Quantity = a.Sum(x => x.NumQuantity)
-                                  }).FirstOrDefaultAsync();
+                                      PurchaseDate = a.Key.purchaseDate.ToString("dd MMM yyyy"),
+                                      Quantity = a.Sum(x => x.NumQuantity),
+                                      UnitPrice = a.Sum(x=>x.NumUnitPrice)
+                                  }).ToListAsync();
                 return data;
             }
             catch (Exception ex)
