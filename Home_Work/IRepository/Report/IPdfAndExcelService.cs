@@ -5,6 +5,6 @@ namespace Home_Work.IRepository.Report
 {
     public interface IPdfAndExcelService
     {
-        public Task<HtmlToPdfDocument> ItemListPdf(ItemDTO obj);
+        public Task<HtmlToPdfDocument> ItemListPdf(List<ItemDTO> obj);
     }
 }

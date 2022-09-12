@@ -19,6 +19,8 @@ namespace Home_Work
             services.AddTransient<IPurchaseService, PurchaseService>();
             services.AddTransient<IPartnerService, PartnerService>();
             services.AddTransient<ISalesService, SalesService>();
+            services.AddTransient<IPdfAndExcelService, PdfAndExcelService>();
+            services.AddTransient<ITemplateGeneratorService, TemplateGeneratorService>();
         }
     }
 }

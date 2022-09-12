@@ -8,12 +8,14 @@ namespace Home_Work.Repository.Report
     {
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly string ItemListCSSUrl;
-        public PdfAndExcelService(IWebHostEnvironment webHostEnvironment)
+        private readonly ITemplateGeneratorService templateGeneratorService;
+        public PdfAndExcelService(IWebHostEnvironment webHostEnvironment, ITemplateGeneratorService templateGeneratorService)
         {
             this.webHostEnvironment = webHostEnvironment;
             this.ItemListCSSUrl = webHostEnvironment.ContentRootPath + "/wwwroot/item_list.css";
+            this.templateGeneratorService = templateGeneratorService;
         }
-        public async Task<HtmlToPdfDocument> ItemListPdf(ItemDTO obj)
+        public async Task<HtmlToPdfDocument> ItemListPdf(List<ItemDTO> obj)
         {
             try
             {
@@ -29,7 +31,7 @@ namespace Home_Work.Repository.Report
                 {
                     PagesCount = true,
                     HeaderSettings = { Line = false },
-                    HtmlContent="",
+                    HtmlContent=await templateGeneratorService.ItemListPdf(obj),
                     WebSettings = { DefaultEncoding = "UTF-8", UserStyleSheet = ItemListCSSUrl },
                     FooterSettings = { FontName = "Arial", FontSize = 6, Line = false, Right = "Page [page] of [toPage]", Center = "System Generated Report. Pinted On" + DateTime.Now.ToString("dd-MMM-yyyy hh:mm tt") }
                 };
