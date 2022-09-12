@@ -1,6 +1,8 @@
 ﻿using DinkToPdf;
 using DinkToPdf.Contracts;
 using Home_Work.DTO.Item;
+using Home_Work.DTO.Purchase;
+using Home_Work.IRepository.Purchase;
 using Home_Work.IRepository.Report;
 using Home_Work.Models.Data;
 using Microsoft.AspNetCore.Http;
@@ -17,12 +19,14 @@ namespace Home_Work.Controllers
         private readonly IConverter converter;
         private readonly IPdfAndExcelService pdfAndExcelService;
         private readonly IWebHostEnvironment webHostEnvironment;
-        public PdfAndExcelController(HomeWorkDbContext context, IConverter converter, IPdfAndExcelService pdfAndExcelService, IWebHostEnvironment webHostEnvironment)
+        private readonly IPurchaseService purchaseService;
+        public PdfAndExcelController(HomeWorkDbContext context, IConverter converter, IPdfAndExcelService pdfAndExcelService, IWebHostEnvironment webHostEnvironment, IPurchaseService purchaseService)
         {
             this.context = context;
             this.pdfAndExcelService= pdfAndExcelService;
             this.converter = converter;
             this.webHostEnvironment = webHostEnvironment;
+            this.purchaseService = purchaseService;
         }
 
         [HttpGet]
@@ -39,6 +43,21 @@ namespace Home_Work.Controllers
                                                 IsActive = i.IsActive
                                             }).ToListAsync();
             HtmlToPdfDocument pdf = await pdfAndExcelService.ItemListPdf(itemlist);
+            var file = converter.Convert(pdf);
+            return File(file, "application/pdf");
+        }
+        
+        [HttpGet]
+        [Route("ItemWiseDailyPurchaseReportPdf")]
+        public async Task<IActionResult> ItemWiseDailyPurchaseReportPdf(DateTime purchaseDate)
+        {
+            var data = await purchaseService.ItemWiseDailyPurchaseReport(purchaseDate);
+            if (data.Count() == 0)
+            {
+                throw new Exception("Data Not Found");
+            }
+
+            HtmlToPdfDocument pdf= await pdfAndExcelService.ItemWiseDailyPurchaseReportPdf(data);
             var file = converter.Convert(pdf);
             return File(file, "application/pdf");
         }
