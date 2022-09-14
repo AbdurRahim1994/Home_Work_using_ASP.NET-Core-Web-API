@@ -5,6 +5,7 @@ using Home_Work.DTO.Purchase;
 using Home_Work.IRepository.Purchase;
 using Home_Work.IRepository.Report;
 using Home_Work.Models.Data;
+using Home_Work.Repository.Report;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,7 @@ namespace Home_Work.Controllers
             this.purchaseService = purchaseService;
         }
 
+        #region -- PDF --
         [HttpGet]
         [Route("ItemListPdf")]
         public async Task<IActionResult> ItemListPdf()
@@ -61,5 +63,23 @@ namespace Home_Work.Controllers
             var file = converter.Convert(pdf);
             return File(file, "application/pdf");
         }
+        #endregion
+
+        #region -- Excel --
+        [HttpGet]
+        [Route("ItemWiseDailyPurchaseReportExcel")]
+        public async Task<IActionResult> ItemWiseDailyPurchaseReportExcel(DateTime purchaseDate, bool isDownload)
+        {
+            var data =await purchaseService.ItemWiseDailyPurchaseReport(purchaseDate);
+            if (isDownload == true)
+            {
+                return await DownloadExcel.ItemWiseDailyPurchaseReportExcel(data);
+            }
+            else
+            {
+                return Ok(data);
+            }
+        }
+        #endregion
     }
 }
