@@ -108,5 +108,42 @@ namespace Home_Work.Repository.Sales
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<List<CustomerWiseMonthlySalesReportDTO>> CustomerWiseMonthlySalesReport(DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                var data = await (from s in _context.TblSales
+                                  join sd in _context.TblSalesDetails on s.IntSalesId equals sd.IntSalesId
+                                  join prt in _context.TblPartners on s.IntCustomerId equals prt.IntPartnerId
+                                  where s.DteSalesDate.Value.Date >= fromDate.Date && s.DteSalesDate.Value.Date <= toDate.Date
+                                  select new
+                                  {
+                                      s.IntCustomerId,
+                                      prt.StrPartnerName,
+                                      SalesDate = s.DteSalesDate.Value.Date,
+                                      sd.NumQuantity,
+                                      sd.NumUnitPrice
+                                  }).GroupBy(x => new
+                                  {
+                                      x.IntCustomerId,
+                                      x.StrPartnerName,
+                                      x.NumUnitPrice,
+                                      SalesDate = x.SalesDate
+                                  }).Select(x => new CustomerWiseMonthlySalesReportDTO
+                                  {
+                                      IntCustomerId = x.Key.IntCustomerId,
+                                      StrCustomerName = x.Key.StrPartnerName,
+                                      DteSalesDate = x.Key.SalesDate.ToString("dd MMM yyyy"),
+                                      Quantity = x.Sum(x => x.NumQuantity),
+                                      UnitPrice = x.Key.NumUnitPrice
+                                  }).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace Home_Work.IRepository.Sales
     {
         public Task<MessageHelper> CreateSales(SalesDTO obj);
         public Task<List<ItemWiseMonthlySalesReportDTO>> ItemWiseMonthlySalesReport(DateTime fromDate, DateTime toDate);
+        public Task<List<CustomerWiseMonthlySalesReportDTO>> CustomerWiseMonthlySalesReport(DateTime fromDate, DateTime toDate);
     }
 }

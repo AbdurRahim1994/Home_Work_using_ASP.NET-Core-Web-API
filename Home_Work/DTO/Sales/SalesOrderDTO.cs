@@ -31,4 +31,13 @@
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }
     }
+
+    public class CustomerWiseMonthlySalesReportDTO
+    {
+        public long IntCustomerId { get; set; }
+        public string StrCustomerName { get; set; }
+        public string DteSalesDate { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+    }
 }
