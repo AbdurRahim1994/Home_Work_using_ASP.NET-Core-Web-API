@@ -20,4 +20,15 @@
         public decimal NumUnitPrice { get; set; }
         public bool IsActive { get; set; }
     }
+
+    public class ItemWiseMonthlySalesReportDTO
+    {
+        public long IntItemId { get; set; }
+        public string StrItemName { get; set; }
+        public long IntCustomerId { get; set; }
+        public string StrCustomerName { get; set; }
+        public string DteSalesDate { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+    }
 }

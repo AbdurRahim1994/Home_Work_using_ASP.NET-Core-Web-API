@@ -20,5 +20,12 @@ namespace Home_Work.Controllers
         {
             return Ok(await _salesService.CreateSales(obj));
         }
+
+        [HttpGet]
+        [Route("ItemWiseMonthlySalesReport")]
+        public async Task<IActionResult> ItemWiseMonthlySalesReport(DateTime fromDate, DateTime toDate)
+        {
+            return Ok(await _salesService.ItemWiseMonthlySalesReport(fromDate, toDate));
+        }
     }
 }
