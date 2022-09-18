@@ -8,5 +8,6 @@ namespace Home_Work.IRepository.Purchase
         public Task<MessageHelper> CreatePurchase(PurchaseDTO obj);
         public Task<MessageHelper> MultiplePurchaseCreate(List<PurchaseDTO> obj);
         public Task<List<ItemWiseDailyPurchaseReportDTO>> ItemWiseDailyPurchaseReport(DateTime purchaseDate);
+        public Task<List<SupplierWiseDailyPurchaseReportDTO>> SupplierWiseDailyPurchaseReport(DateTime purchaseDate);
     }
 }

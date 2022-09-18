@@ -34,5 +34,12 @@ namespace Home_Work.Controllers
         {
             return Ok(await _purchaseService.ItemWiseDailyPurchaseReport(purchaseDate));
         }
+
+        [HttpGet]
+        [Route("SupplierWiseDailyPurchaseReport")]
+        public async Task<IActionResult> SupplierWiseDailyPurchaseReport(DateTime purchaseDate)
+        {
+            return Ok(await _purchaseService.SupplierWiseDailyPurchaseReport(purchaseDate));
+        }
     }
 }

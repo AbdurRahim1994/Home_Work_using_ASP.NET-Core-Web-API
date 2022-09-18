@@ -28,10 +28,12 @@
         public decimal UnitPrice { get; set; }
         public decimal Quantity { get; set; }
     }
-    public class SupplierWiseDailyPurchaseDTO
+    public class SupplierWiseDailyPurchaseReportDTO
     {
         public long SupplierId { get; set; }
         public string SupplierName { get; set; }
+        public long IntItemId { get; set; }
+        public string StrItemName { get; set; }
         public string SuppliedDate { get; set; }
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }

@@ -154,5 +154,49 @@ namespace Home_Work.Repository.Purchase
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<List<SupplierWiseDailyPurchaseReportDTO>> SupplierWiseDailyPurchaseReport(DateTime purchaseDate)
+        {
+            try
+            {
+                var data = await (from p in _context.TblPurchases
+                                  join pd in _context.TblPurchaseDetails on p.IntPurchaseId equals pd.IntPurchaseId
+                                  join prt in _context.TblPartners on p.IntSupplierId equals prt.IntPartnerId
+                                  join i in _context.TblItems on pd.IntItemId equals i.IntItemId
+                                  where p.DtePurchaseDate.Value.Date == purchaseDate.Date
+                                  select new
+                                  {
+                                      i.IntItemId,
+                                      i.StrItemName,
+                                      p.IntSupplierId,
+                                      prt.StrPartnerName,
+                                      pd.NumQuantity,
+                                      pd.NumUnitPrice,
+                                      purchaseDate = p.DtePurchaseDate.Value.Date
+                                  }).GroupBy(x => new
+                                  {
+                                      x.IntSupplierId,
+                                      x.StrPartnerName,
+                                      x.IntItemId,
+                                      x.StrItemName,
+                                      x.NumUnitPrice,
+                                      x.purchaseDate
+                                  }).Select(x => new SupplierWiseDailyPurchaseReportDTO
+                                  {
+                                      IntItemId = x.Key.IntItemId,
+                                      StrItemName = x.Key.StrItemName,
+                                      SupplierId = x.Key.IntSupplierId,
+                                      SupplierName = x.Key.StrPartnerName,
+                                      Quantity = x.Sum(x => x.NumQuantity),
+                                      UnitPrice = x.Key.NumUnitPrice,
+                                      SuppliedDate = x.Key.purchaseDate.ToString("dd MMM yyyy")
+                                  }).ToListAsync();
+                return data;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
