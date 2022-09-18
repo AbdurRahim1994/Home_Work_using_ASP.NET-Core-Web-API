@@ -90,16 +90,12 @@ namespace Home_Work.Repository.Sales
                                   {
                                       x.IntItemId,
                                       x.StrItemName,
-                                      x.IntCustomerId,
-                                      x.StrPartnerName,
                                       x.NumUnitPrice,
                                       x.salesDate
                                   }).Select(x => new ItemWiseMonthlySalesReportDTO
                                   {
                                       IntItemId = x.Key.IntItemId,
                                       StrItemName = x.Key.StrItemName,
-                                      IntCustomerId = x.Key.IntCustomerId,
-                                      StrCustomerName = x.Key.StrPartnerName,
                                       UnitPrice = x.Key.NumUnitPrice,
                                       Quantity = x.Sum(x => x.NumQuantity),
                                       DteSalesDate = x.Key.salesDate.ToString("dd MMM yyyy")
