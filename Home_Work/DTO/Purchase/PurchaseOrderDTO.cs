@@ -38,4 +38,10 @@
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }
     }
+
+    public class ItemWiseDailyPurchaseVsSalesReportDTO
+    {
+        public decimal TotalPurchase { get; set; }
+        public decimal TotalSales { get; set; }
+    }
 }

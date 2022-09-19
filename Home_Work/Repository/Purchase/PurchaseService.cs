@@ -198,5 +198,34 @@ namespace Home_Work.Repository.Purchase
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<ItemWiseDailyPurchaseVsSalesReportDTO> ItemWiseDailyPurchaseVsSalesReport(DateTime date, long intItemId)
+        {
+            try
+            {
+                var purchase = (from p in _context.TblPurchases
+                                join pd in _context.TblPurchaseDetails on p.IntPurchaseId equals pd.IntPurchaseId
+                                join i in _context.TblItems on pd.IntItemId equals i.IntItemId
+                                where pd.IntItemId == intItemId && p.DtePurchaseDate.Value.Date == date.Date
+                                select pd.NumUnitPrice * pd.NumQuantity).Sum();
+
+                var sales = (from s in _context.TblSales
+                             join sd in _context.TblSalesDetails on s.IntSalesId equals sd.IntSalesId
+                             join i in _context.TblItems on sd.IntItemId equals i.IntItemId
+                             where sd.IntItemId == intItemId && s.DteSalesDate.Value.Date == date.Date
+                             select sd.NumUnitPrice * sd.NumQuantity).Sum();
+
+                return new ItemWiseDailyPurchaseVsSalesReportDTO
+                {
+                    TotalSales = sales,
+                    TotalPurchase =purchase
+                };
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
