@@ -1,5 +1,6 @@
 ﻿using Home_Work.DTO.Purchase;
 using Home_Work.IRepository.Purchase;
+using Home_Work.Models.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,11 @@ namespace Home_Work.Controllers
     public class PurchaseController : ControllerBase
     {
         private readonly IPurchaseService _purchaseService;
-        public PurchaseController(IPurchaseService _purchaseService)
+        private readonly HomeWorkDbContext _context;
+        public PurchaseController(IPurchaseService _purchaseService, HomeWorkDbContext _context)
         {
             this._purchaseService = _purchaseService;
+            this._context = _context;
         }
         [HttpPost]
         [Route("CreatePurchase")]
@@ -54,6 +57,13 @@ namespace Home_Work.Controllers
         public async Task<IActionResult> MonthlyPurchaseVsSalesReport()
         {
             return Ok(await _purchaseService.MonthlyPurchaseVsSalesReport());
+        }
+
+        [HttpGet]
+        [Route("SalesVsPurchase")]
+        public async Task<IActionResult> SalesVsPurchase()
+        {
+            return Ok(await _purchaseService.SalesVsPurchase());
         }
     }
 }

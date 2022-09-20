@@ -51,6 +51,7 @@ namespace Home_Work.DTO.Purchase
         public List<decimal> TotalPurchase { get; set; }
         public List<decimal> TotalSales { get; set; }
         public List<string> Date { get; set; }
+        public List<string> ProfitLossStatus { get; set; }
     }
 
 }

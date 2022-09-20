@@ -291,5 +291,67 @@ namespace Home_Work.Repository.Purchase
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<MonthlyPurchaseVsSalesReportDTO> SalesVsPurchase()
+        {
+            try
+            {
+                var purchaseCurve = (from p in _context.TblPurchases
+                                     join pd in _context.TblPurchaseDetails on p.IntPurchaseId equals pd.IntPurchaseId
+                                     select new
+                                     {
+                                         purchaseMonth = p.DtePurchaseDate.Value.Date.Month,
+                                         purchaseAmount = pd.NumUnitPrice * pd.NumQuantity
+                                     }).ToList();
+
+                var salesCurve = (from s in _context.TblSales
+                                  join sd in _context.TblSalesDetails on s.IntSalesId equals sd.IntSalesId
+                                  select new
+                                  {
+                                      salesMonth = s.DteSalesDate.Value.Date.Month,
+                                      salesAmount = sd.NumUnitPrice * sd.NumQuantity
+                                  }).ToList();
+
+                var prch = new List<decimal>();
+                var sls = new List<decimal>();
+                var dte = new List<string>();
+                var sts = new List<string>();
+
+                int currentMonth = DateTime.Now.Month;
+                int currentYear = DateTime.Now.Year;
+
+                for (int month = 1; month <= currentMonth; month++)
+                {
+                    string transactionDate = Convert.ToDateTime(currentYear.ToString() + "-" + month.ToString() + "-1").ToString("MMM yyyy");
+                    
+                    var purchase = (from a in purchaseCurve
+                                    where a.purchaseMonth == month
+                                    select a.purchaseAmount).Sum();
+
+                    var sales = (from a in salesCurve
+                                 where a.salesMonth == month
+                                 select a.salesAmount).Sum();
+
+                    var status = sales > purchase ? "Profit" : sales == purchase ? "No Transaction" : "Loss";
+
+                    prch.Add(purchase);
+                    sls.Add(sales);
+                    dte.Add(transactionDate);
+                    sts.Add(status);
+                }
+
+                return new MonthlyPurchaseVsSalesReportDTO
+                {
+                    TotalPurchase = prch,
+                    TotalSales = sls,
+                    Date = dte,
+                    ProfitLossStatus = sts
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
