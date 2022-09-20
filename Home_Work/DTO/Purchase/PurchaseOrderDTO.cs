@@ -1,4 +1,6 @@
-﻿namespace Home_Work.DTO.Purchase
+﻿using System.Collections.Generic;
+
+namespace Home_Work.DTO.Purchase
 {
     public class PurchaseOrderDTO
     {
@@ -44,4 +46,11 @@
         public decimal TotalPurchase { get; set; }
         public decimal TotalSales { get; set; }
     }
+    public class MonthlyPurchaseVsSalesReportDTO 
+    {
+        public List<decimal> TotalPurchase { get; set; }
+        public List<decimal> TotalSales { get; set; }
+        public List<string> Date { get; set; }
+    }
+
 }

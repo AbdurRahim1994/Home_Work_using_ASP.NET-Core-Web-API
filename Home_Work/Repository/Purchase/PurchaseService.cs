@@ -227,5 +227,69 @@ namespace Home_Work.Repository.Purchase
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<MonthlyPurchaseVsSalesReportDTO> MonthlyPurchaseVsSalesReport()
+        {
+            try
+            {
+                DateTime date = DateTime.Now;
+                var firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+
+                var purchaseCurve = (from p in _context.TblPurchases
+                                join pd in _context.TblPurchaseDetails on p.IntPurchaseId equals pd.IntPurchaseId
+                                where p.DtePurchaseDate.Value.Date >= firstDayOfMonth
+                                && p.DtePurchaseDate.Value.Date <= date
+                                select new
+                                {
+                                    purchaseDay = p.DtePurchaseDate.Value.Day,
+                                    purchaseAmount = pd.NumUnitPrice * pd.NumQuantity
+                                }).ToList();
+
+                var salesCurve = (from s in _context.TblSales
+                                  join sd in _context.TblSalesDetails on s.IntSalesId equals sd.IntSalesId
+                                  where s.DteSalesDate.Value.Date >= firstDayOfMonth
+                                  && s.DteSalesDate.Value.Date <= date
+                                  select new
+                                  {
+                                      salesDay = s.DteSalesDate.Value.Day,
+                                      salesAmount = sd.NumUnitPrice * sd.NumQuantity
+                                  }).ToList();
+
+                var prch = new List<decimal>();
+                var sls = new List<decimal>();
+                var dte = new List<string>();
+
+                string currentMonthYear = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString();
+                int currentDay = DateTime.Now.Day;
+
+                for (int day = 1; day <=currentDay; day++)
+                {
+                    string transactionDate = currentMonthYear + "-" + day.ToString();
+
+                    var purchase = (from a in purchaseCurve
+                                    where a.purchaseDay == day
+                                    select a.purchaseAmount).Sum();
+
+                    var sales = (from a in salesCurve
+                                 where a.salesDay == day
+                                 select a.salesAmount).Sum();
+
+                    prch.Add(purchase);
+                    sls.Add(sales);
+                    dte.Add(transactionDate);
+                }
+
+                return new MonthlyPurchaseVsSalesReportDTO
+                {
+                    TotalPurchase = prch,
+                    TotalSales = sls,
+                    Date = dte
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

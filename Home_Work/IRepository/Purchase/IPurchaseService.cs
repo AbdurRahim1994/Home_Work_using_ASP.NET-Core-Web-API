@@ -10,5 +10,6 @@ namespace Home_Work.IRepository.Purchase
         public Task<List<ItemWiseDailyPurchaseReportDTO>> ItemWiseDailyPurchaseReport(DateTime purchaseDate);
         public Task<List<SupplierWiseDailyPurchaseReportDTO>> SupplierWiseDailyPurchaseReport(DateTime purchaseDate);
         public Task<ItemWiseDailyPurchaseVsSalesReportDTO> ItemWiseDailyPurchaseVsSalesReport(DateTime date, long intItemId);
+        public Task<MonthlyPurchaseVsSalesReportDTO> MonthlyPurchaseVsSalesReport();
     }
 }

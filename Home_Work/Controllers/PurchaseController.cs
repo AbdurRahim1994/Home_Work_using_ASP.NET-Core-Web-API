@@ -48,5 +48,12 @@ namespace Home_Work.Controllers
         {
             return Ok(await _purchaseService.ItemWiseDailyPurchaseVsSalesReport(date,intItemId));
         }
+
+        [HttpGet]
+        [Route("MonthlyPurchaseVsSalesReport")]
+        public async Task<IActionResult> MonthlyPurchaseVsSalesReport()
+        {
+            return Ok(await _purchaseService.MonthlyPurchaseVsSalesReport());
+        }
     }
 }
